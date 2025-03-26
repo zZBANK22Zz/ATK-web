@@ -59,7 +59,7 @@ export default function LoginPage() {
         <div className="mb-4">
           <ReCAPTCHA
             ref={recaptchaRef}
-            sitekey="6LfoUwArAAAAAA7Ob7o8Xx83J6m0Ly7zi3xJVpag"
+            sitekey=""
             onChange={(token) => setRecaptchaToken(token)}
             onExpired={() => setRecaptchaToken(null)}
           />
