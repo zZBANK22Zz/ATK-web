@@ -1,11 +1,13 @@
 import React, { useRef, useState } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
+import { useRouter } from "next/router";
 
 export default function LoginPage() {
   const recaptchaRef = useRef(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [recaptchaToken, setRecaptchaToken] = useState(null);
+  const router = useRouter();
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -20,6 +22,9 @@ export default function LoginPage() {
       password,
       recaptchaToken,
     });
+    localStorage.setItem("isLoggedIn", "true")
+    router.push('/');
+
 
     // Optional: Reset reCAPTCHA
     recaptchaRef.current.reset();

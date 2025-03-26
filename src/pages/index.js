@@ -1,12 +1,21 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
 export default function Home() {
   const router = useRouter();
+  const [authChecked, setAuthChecked] = useState(false);
 
   useEffect(() => {
-    router.push("/login-register/LoginPage");
+    const isAuthenticated = localStorage.getItem("isLoggedIn");
+
+    if (!isAuthenticated) {
+      router.push("/login-register/LoginPage");
+    } else {
+      setAuthChecked(true);
+    }
   }, []);
+
+  if (!authChecked) return null;
 
   return (
     <div className="flex flex-col justify-center min-h-screen">
