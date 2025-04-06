@@ -12,6 +12,8 @@ export default function TestSubmission() {
     if (file) {
       setImage(URL.createObjectURL(file)); // Preview the uploaded image
     }
+
+    const accept_fileType = ".jpg,.jpeg,.png,.pdf"
   };
 
   // Handle form submission
@@ -55,7 +57,7 @@ export default function TestSubmission() {
           <input
             type="file"
             id="image"
-            accept="image/*"
+            accept={accept_fileType}
             onChange={handleImageChange}
             className="w-full p-2 border border-gray-300 rounded"
             required
