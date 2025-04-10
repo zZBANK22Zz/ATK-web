@@ -6,6 +6,7 @@ export default function TestSubmission() {
   const [timestamp, setTimestamp] = useState(""); // Stores the timestamp
   const [confirmationMessage, setConfirmationMessage] = useState(""); // Stores confirmation message
 
+  const accept_fileType = process.env.NEXT_PUBLIC_FILE_TYPE_ACCEPT
   // Handle image upload
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -13,7 +14,6 @@ export default function TestSubmission() {
       setImage(URL.createObjectURL(file)); // Preview the uploaded image
     }
 
-    const accept_fileType = ".jpg,.jpeg,.png,.pdf"
   };
 
   // Handle form submission
