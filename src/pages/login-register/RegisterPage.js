@@ -42,10 +42,16 @@ export default function RegisterPage() {
 
     const response = await createUser.json();
     console.log("Registration successful:", response);
+    if (!response.id) {
+      console.error("Register response does not contain user id:", response);
+      alert("Registration failed: userId not found.");
+      return;
+    }
+    localStorage.setItem("userId", response.id.toString());
     // Optional: Reset reCAPTCHA after registration success
     recaptchaRef.current.reset();
     // Push to index page after registration success
-    r.push("/");
+    r.push("/test-submission");
   };
   //=====================================================================
 

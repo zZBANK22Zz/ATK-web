@@ -33,12 +33,19 @@ export default function LoginPage() {
         password
       }),
     })
+    const response = await userLogin.json();
 
-    console.log("Login Submitted:", {
-      username,
-      password,
-      recaptchaToken,
-    });
+    if (!userLogin.ok) {
+      throw new Error(response.message || "Login failed");
+    }
+    
+    if (!response.user?.id) {
+      console.error("Login response does not contain user id:", response);
+      alert("Login failed: userId not found.");
+      return;
+    }
+    
+    localStorage.setItem("userId", response.user.id.toString());
 
     // Optional: Reset reCAPTCHA after login success
     recaptchaRef.current.reset();

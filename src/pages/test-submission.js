@@ -17,19 +17,40 @@ export default function TestSubmission() {
   };
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const currentTimestamp = new Date().toISOString();
-    setTimestamp(currentTimestamp); // Set the current timestamp
+    setTimestamp(currentTimestamp);
 
-    // Logic to handle form submission (could be an API call to a server)
-    console.log("Test Result:", testResult);
-    console.log("Uploaded Image:", image);
-    console.log("Timestamp:", currentTimestamp);
+    const fileInput = document.getElementById("image");
+    const file = fileInput.files[0];
 
-    // Show a confirmation message after submission
-    setConfirmationMessage("Your ATK test result has been successfully submitted!");
+    const formData = new FormData();
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
+      alert("Please login first.");
+      return;
+    }
+    formData.append("userId", userId);
+    formData.append("result", testResult.toLowerCase()); // convert to lowercase to match backend enum
+    formData.append("image", file);
+
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/atk`, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to submit test result");
+      }
+
+      setConfirmationMessage("Your ATK test result has been successfully submitted!");
+    } catch (error) {
+      console.error("Submission error:", error);
+      setConfirmationMessage("There was an error submitting your test result.");
+    }
   };
 
   return (
