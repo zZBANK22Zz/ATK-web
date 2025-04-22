@@ -4,8 +4,7 @@ import { useRouter } from "next/router";
 
 export default function RegisterPage() {
   const recaptchaRef = useRef(null);
-  const [firstname, setFirstname] = useState("");
-  const [lastname, setLastname] = useState("");
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [recaptchaToken, setRecaptchaToken] = useState(null);
   const [password, setpassword] = useState("");
@@ -14,7 +13,7 @@ export default function RegisterPage() {
   const r = useRouter();
   //=====================================================================
   //เป็นฟังก์ชั่นให้ user สมัคร เข้าใช้งานระบบ เช่นเดียวกับการ Login แต่ฟังก์ชั่นนี้จะเป็น การ create user account
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
     //1. Check user comfirm recapcha or not.
     if (!recaptchaToken) {
@@ -22,16 +21,30 @@ export default function RegisterPage() {
       return;
     }
 
-    console.log("Register Submitted:", {
-      firstname,
-      lastname,
-      email,
-      recaptchaToken,
-      password,
+    const createUser = await fetch("http://localhost:8000/users/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username,
+        email,
+        password,
+        recaptchaToken,
+      }),
     });
-    // Optional: Reset reCAPTCHA after login success
+
+    if (!createUser.ok) {
+      const errorData = await createUser.json();
+      alert(errorData.message || "Registration failed");
+      return;
+    }
+
+    const response = await createUser.json();
+    console.log("Registration successful:", response);
+    // Optional: Reset reCAPTCHA after registration success
     recaptchaRef.current.reset();
-    //2. push to index page after log in successes
+    // Push to index page after registration success
     r.push("/");
   };
   //=====================================================================
@@ -44,22 +57,13 @@ export default function RegisterPage() {
       >
         <h1 className="text-2xl font-bold mb-6 text-center">Register</h1>
 
-        <label className="block mb-2 text-sm font-semibold">Firstname</label>
+        <label className="block mb-2 text-sm font-semibold">Username</label>
         <input
           type="text"
           required
           className="w-full mb-4 p-2 border rounded"
-          value={firstname}
-          onChange={(e) => setFirstname(e.target.value)}
-        />
-
-        <label className="block mb-2 text-sm font-semibold">Lastname</label>
-        <input
-          type="text"
-          required
-          className="w-full mb-4 p-2 border rounded"
-          value={lastname}
-          onChange={(e) => setLastname(e.target.value)}
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
         />
 
         <label className="block mb-2 text-sm font-semibold">Email</label>

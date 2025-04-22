@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 
 export default function LoginPage() {
   const recaptchaRef = useRef(null);
-  const [email, setEmail] = useState("");
+  const [username, setUername] = useState("");
   const [password, setPassword] = useState("");
   const [recaptchaToken, setRecaptchaToken] = useState(null);
   const recapchaSitekey = process.env.NEXT_PUBLIC_GOOGLE_RECAPTCHA_SITE_KEY;
@@ -15,7 +15,7 @@ export default function LoginPage() {
   //หาก user มี account อยู่แล้วสามารถใช้แค่ gmail และ password เข้าระบบได้เลย
   //Important: user ทุกคนจะต้องยืนยันตัวตนโดย recapcha by google console
   //writed by Ananthichai S.
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     //1. Check user comfirm recapcha or not.
     if (!recaptchaToken) {
@@ -23,8 +23,19 @@ export default function LoginPage() {
       return;
     }
 
+    const userLogin = await fetch('http://localhost:8000/users/login', {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username,
+        password
+      }),
+    })
+
     console.log("Login Submitted:", {
-      email,
+      username,
       password,
       recaptchaToken,
     });
@@ -44,13 +55,13 @@ export default function LoginPage() {
       >
         <h1 className="text-2xl font-bold mb-6 text-center">Login</h1>
 
-        <label className="block mb-2 text-sm font-semibold">Email</label>
+        <label className="block mb-2 text-sm font-semibold">username</label>
         <input
-          type="email"
+          type="username"
           required
           className="w-full mb-4 p-2 border rounded"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          value={username}
+          onChange={(e) => setUername(e.target.value)}
         />
 
         <label className="block mb-2 text-sm font-semibold">Password</label>
