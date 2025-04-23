@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 export default function TestSubmission() {
   const [testResult, setTestResult] = useState(""); // Stores test result (Positive/Negative)
@@ -52,6 +52,16 @@ export default function TestSubmission() {
       setConfirmationMessage("There was an error submitting your test result.");
     }
   };
+
+  useEffect(() => {
+    const sessionTimeout = setTimeout(() => {
+      alert("Session expired. Please log in again.");
+      localStorage.removeItem("userId");
+      window.location.href = "/login-register/LoginPage";
+    }, 1*60*1000);
+
+    return () => clearTimeout(sessionTimeout);
+  }, []);
 
   return (
     <div className="flex flex-col items-center min-h-screen">

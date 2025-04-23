@@ -34,6 +34,11 @@ export default function RegisterPage() {
       }),
     });
 
+    if(password.length < 8) {
+      alert("Password must be longer then 8 character!");
+      return
+    }
+
     if (!createUser.ok) {
       const errorData = await createUser.json();
       alert(errorData.message || "Registration failed");
