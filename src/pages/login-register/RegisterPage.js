@@ -55,8 +55,9 @@ export default function RegisterPage() {
     localStorage.setItem("userId", response.id.toString());
     // Optional: Reset reCAPTCHA after registration success
     recaptchaRef.current.reset();
-    // Push to index page after registration success
+    // Push to test-submission page and refresh
     r.push("/test-submission");
+    window.location.reload();
   };
   //=====================================================================
 

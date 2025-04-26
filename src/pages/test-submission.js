@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 
 export default function TestSubmission() {
   const [testResult, setTestResult] = useState(""); // Stores test result (Positive/Negative)
   const [image, setImage] = useState(null); // Stores uploaded image
   const [timestamp, setTimestamp] = useState(""); // Stores the timestamp
   const [confirmationMessage, setConfirmationMessage] = useState(""); // Stores confirmation message
+
+  const r = useRouter()
 
   const accept_fileType = process.env.NEXT_PUBLIC_FILE_TYPE_ACCEPT
   // Handle image upload
@@ -39,8 +42,14 @@ export default function TestSubmission() {
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/atk`, {
         method: "POST",
+        credentials: 'include',
         body: formData,
       });
+      if(response.status === 401) {
+        alert("Session expired. Please log in again.");
+        r.push('/');
+        return;
+      }
 
       if (!response.ok) {
         throw new Error("Failed to submit test result");
@@ -53,15 +62,6 @@ export default function TestSubmission() {
     }
   };
 
-  useEffect(() => {
-    const sessionTimeout = setTimeout(() => {
-      alert("Session expired. Please log in again.");
-      localStorage.removeItem("userId");
-      window.location.href = "/login-register/LoginPage";
-    }, 1*60*1000);
-
-    return () => clearTimeout(sessionTimeout);
-  }, []);
 
   return (
     <div className="flex flex-col items-center min-h-screen">
