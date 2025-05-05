@@ -52,12 +52,13 @@ export default function RegisterPage() {
       alert("Registration failed: userId not found.");
       return;
     }
+    localStorage.setItem("username", response.username);
     localStorage.setItem("userId", response.id.toString());
     // Optional: Reset reCAPTCHA after registration success
     recaptchaRef.current.reset();
     // Push to test-submission page and refresh
     r.push("/test-submission");
-    window.location.reload();
+    // window.location.reload();
   };
   //=====================================================================
 

@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 
 export default function LoginPage() {
   const recaptchaRef = useRef(null);
-  const [username, setUername] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [recaptchaToken, setRecaptchaToken] = useState(null);
   const recapchaSitekey = process.env.NEXT_PUBLIC_GOOGLE_RECAPTCHA_SITE_KEY;
@@ -23,7 +23,7 @@ export default function LoginPage() {
       return;
     }
 
-    const userLogin = await fetch('http://localhost:8000/auth/login', {
+    const userLogin = await fetch("http://localhost:8000/auth/login", {
       method: "POST",
       credentials: "include",
       headers: {
@@ -31,13 +31,14 @@ export default function LoginPage() {
       },
       body: JSON.stringify({
         username,
-        password
+        password,
       }),
-    })
+    });
     const response = await userLogin.json();
 
     if (!userLogin.ok) {
-      throw new Error(response.message || "Login failed");
+      alert(response.message || "Login failed");
+      return;
     }
     
     if (!response.user?.id) {
@@ -46,12 +47,13 @@ export default function LoginPage() {
       return;
     }
     
+    localStorage.setItem("username", response.user.username); // or user.name depending on your backend
     localStorage.setItem("userId", response.user.id.toString());
 
     // Optional: Reset reCAPTCHA after login success
     recaptchaRef.current.reset();
     //2. push to index page after log in successes
-    r.push("/"); 
+    r.push("/");
   };
   //=====================================================================
 
@@ -69,7 +71,7 @@ export default function LoginPage() {
           required
           className="w-full mb-4 p-2 border rounded"
           value={username}
-          onChange={(e) => setUername(e.target.value)}
+          onChange={(e) => setUsername(e.target.value)}
         />
 
         <label className="block mb-2 text-sm font-semibold">Password</label>
@@ -97,7 +99,8 @@ export default function LoginPage() {
           Log in
         </button>
         <div className="flex gap-2">
-          <p>If you doesn't have any account click:</p>
+          <p>If you don’t have an account, click</p>{" "}
+          {/* (with smart apostrophe or &apos;) */}
           <a href="./RegisterPage" className="underline text-blue-700">
             register
           </a>
